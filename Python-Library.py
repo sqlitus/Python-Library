@@ -57,6 +57,7 @@ os.getcwd()
 
 
 # import files
+# https://www.datacamp.com/community/tutorials/python-excel-tutorial
 import pandas as pd
 ticketdata = pd.ExcelFile("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\incident.xlsx")
 print(ticketdata.sheet_names)
@@ -64,19 +65,22 @@ df1 = ticketdata.parse()
 
 
 # dataframes
+# https://www.shanelynn.ie/using-pandas-dataframe-creating-editing-viewing-data-in-python/
 my_data_frame = pd.DataFrame(
         {
                 'col_1': [1,2,3,4,5],
                 'col_2': ['here','are','some','sample','values']
         }
 )
-
 my_data_frame.shape
 my_data_frame.head()
 my_data_frame.dtypes
 my_data_frame['col_2']
+my_data_frame.describe()
 
 
 # github
+# https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/
 import sys
 print(sys.path)
+
