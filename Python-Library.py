@@ -6,18 +6,29 @@ Created on Tue Jun 12 15:01:07 2018
 """
 
 # hello world
-x=5
+x=1
 print(x)
 print('not x')
 print(x+2)
 print(' ')
-y = '5'
+y = 'the fox was 5'
 print(y)
 print(int(y)+2)
 print('5', 5, 'something else 555', 4, sep = ' ', end = '\nthis is the end\n')
+x.bit_length()
+
+z = 555
+z.bit_length()
+z.conjugate()
+
+y.capitalize()
+y.casefold()
 
 
-# lists & indexing
+
+
+
+# list manipulation & indexing
 y = 'bob'
 mylist = [x, y, 10, 5, '6']
 mylist[0]
@@ -34,6 +45,25 @@ mylist.count('bob')
 mylist.index('6')
 mylist[1]
 mylist[0]
+mylist.append(mylist) # affects list object directly
+mylist.clear()
+mylist.copy()
+mylist.count(5)
+mylist.extend(mylist)
+mylist.index('bob')
+mylist[1]
+mylist.insert(1, 2) # before element, adds object
+mylist.pop(4) # removes the object & returns it
+mylist.remove('bob') # just removes the value period.
+mylist.reverse()
+mylist = [1,5,3,33,11]
+mylist.sort() # sorts numerically
+mylist.reverse()
+mylist
+mylist.__add__(mylist) # lengthens the list w/ another list?
+mylist.__class__()
+x.__class__()
+mylist.__contains__(33) # boolean check
 
 
 # for loops & list arithmatic
