@@ -2,7 +2,6 @@
 """
 Created on Tue Jun 12 15:01:07 2018
 
-@author: Chris.J
 """
 
 # hello world
@@ -114,3 +113,29 @@ my_data_frame.describe()
 import sys
 print(sys.path)
 
+
+# time series manipulation
+# https://towardsdatascience.com/basic-time-series-manipulation-with-pandas-4432afee64ea
+import pandas as pd
+from datetime import datetime
+import numpy as np
+
+date_rng = pd.date_range(start='1/1/2018', end='1/08/2018', freq='H')
+date_rng[0]
+type(date_rng[0])
+
+df = pd.DataFrame(date_rng, columns=['date'])
+df['data'] = np.random.randint(0,100,size=(len(date_rng))) # new column
+df.head(15)
+
+df['datetime'] = pd.to_datetime(df['date'])
+type(df['date'])
+df = df.set_index('datetime') # change index to datetime series
+df.drop(['date'], axis=1, inplace=True)
+df.head()
+
+string_date_rng = [str(x) for x in date_rng]
+string_date_rng
+
+timestamp_date_rng = pd.to_datetime(string_date_rng, infer_datetime_format=True)
+timestamp_date_rng
