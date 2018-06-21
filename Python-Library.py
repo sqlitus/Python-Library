@@ -76,6 +76,21 @@ mynums * 3
 for i in mynums:
     print(5*i)
 
+
+x = 5
+range(5)
+range(x)
+for i in range(5):
+    print(x)
+    x+=1
+    
+for i in range(x):
+    print("x = " + str(x))
+    print("i = " + str(i))
+    
+
+
+
     
 # navigate files
 import os
@@ -139,3 +154,49 @@ string_date_rng
 
 timestamp_date_rng = pd.to_datetime(string_date_rng, infer_datetime_format=True)
 timestamp_date_rng
+# to continue
+
+
+# basic ide tips
+import matplotlib.pyplot as plt
+import numpy
+# from numpy import * - don't have to invoke package for each function
+
+t = numpy.arange(0,1,.01)
+y = numpy.sin(2*numpy.pi*t)
+
+plt.figure(1)
+plt.clf()
+plt.plot(t,y)
+
+mylist = [1,2,3,4]
+for item in mylist:
+    print(item)
+bob = 5
+
+
+
+# data science #1 - decision tree demo
+from sklearn import tree
+
+x = [[181, 80, 44], [177, 70, 43], [160,60,38]] # feed in body metrics
+y = ['male', 'female', 'female']
+
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(x,y)
+
+prediction = clf.predict([[190,70,43]]) # predict these
+print(prediction)
+tree.export_graphviz(clf)
+
+# visualize descision tree
+# https://chrisalbon.com/machine_learning/trees_and_forests/visualize_a_decision_tree/
+import pydotplus
+from IPython.display import Image
+dot_data = tree.export_graphviz(clf, out_file = None)
+graph = pydotplus.graph_from_dot_data(dot_data)
+Image(graph.create_png())
+
+# not run
+import os     
+os.environ["PATH"] += os.pathsep + 'C:\\Anaconda3\\Library\\bin\\graphviz'
