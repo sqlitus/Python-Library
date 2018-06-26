@@ -100,7 +100,7 @@ os.chdir("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\")
 os.getcwd()
 
 
-# import files
+# import files & create dataframe
 # https://www.datacamp.com/community/tutorials/python-excel-tutorial
 import pandas as pd
 ticketdata = pd.ExcelFile("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\incident.xlsx")
@@ -200,3 +200,125 @@ Image(graph.create_png())
 # not run
 import os     
 os.environ["PATH"] += os.pathsep + 'C:\\Anaconda3\\Library\\bin\\graphviz'
+
+
+
+
+
+
+
+
+#### advanced dataframe operations ----
+# all here: https://www.datacamp.com/community/tutorials/pandas-tutorial-dataframe-python#question3
+# also refer to pandas.pydata.org for list of OO functions
+# R comparison: https://pandas.pydata.org/pandas-docs/stable/comparison_with_r.html
+import pandas as pd
+ticketdata = pd.ExcelFile("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\incident.xlsx")
+print(ticketdata.sheet_names)
+df = ticketdata.parse()
+df = pd.DataFrame(df)
+
+# dataframe attributes (purple, indexable)
+df.shape
+df.size
+df.columns
+df.values[0,1]
+df.ndim
+df.dtypes
+
+# dataframe methods (functions) (orange)
+df.aggregate('Reopen count')
+df.boxplot('Updates')
+df.describe()
+
+# dataframe subsetting
+x = 5; y = 2
+z = ['Number', 'Category', 'Location']
+df.iloc[0,0]
+df.iloc[0][0]
+df.iloc[0,1]
+df.iloc[:,0]
+df.iloc[0:5,0:2]
+df.iloc[0:5] # just row index
+df.iloc[0:5,] # just row index
+df.loc[0:5, 'Number']
+df.loc[0:5, ['Number', 'Category']]
+df.loc[0:x, z]
+print(df.at[0,'Number']) # use 'at' for single values
+print(df.iat[x,0]) # use 'at' for single values
+
+# dataframe create new calculated columns
+df['UpdateAvgByReassignment'] = df['Updates'] / (df['Reassignment count'] + 1)
+
+# dataframe drop columns remove column delete columns
+df['mynewcol'] = 1
+df = df.drop(columns = ['mynewcol']) # or..
+df.drop(columns = ['mynewcol'], inplace=True)
+
+# dataframe remove duplicates
+mydf = pd.DataFrame(
+        {
+            'col_1': [1,2,3,4,5,1,2,3,4,5],
+            'col_2': ['here','are','some','sample','values','again','are','some','new','values']
+            , 'col_3': [11,22,33,44,55,66,77,88,99,55]
+        }
+)
+mydf
+mydf.drop_duplicates() # entire row value
+mydf.drop_duplicates(subset = ['col_1', 'col_2']) # which row [combinations] to check for duplicates
+
+# dataframe filter by exact string values, regex
+exact_searches = ['FL UTC', 'MA SOS']
+out = df.loc[df['Location'] == "MA SOS"]
+out = df.loc[df["Location"].isin(['FL UTC', 'MA SOS'])]
+out = df.loc[df["Location"].isin(exact_searches)]
+
+search_for = ['hst', 'Sos', 'UTC']
+out = df[df['Location'].str.contains("HST|SOS")==True] # using regex
+out = df[df['Location'].str.contains("(?i)hst|SOS")==True]
+out = df[df['Location'].str.contains("|".join(search_for))==True]
+out = df[df['Location'].str.contains("(?i)"+"|".join(search_for))==True]
+out = df[df['Location'].str.contains("(?i)"+"|".join(["hst","sos","utc"]))==True]
+
+print("something" + " " + "something else" + "and also these")
+print("(?i)"+"|".join(["hst","sos"]))
+
+
+
+
+# regex label columns
+# conditional value columns...
+# create small 'label' table to join & filter, aggregate by...
+
+# dataframe calculated columns with time & time conversions. datediff.
+df['my resolve time'] = df['Resolved'] - df['Created']
+df['my resolve time 2'] = (df['Resolved'] - df['Created']).astype('timedelta64[h]') # floor hours
+df['my resolve time 3'] = (df['Resolved'] - df['Created']).astype('timedelta64[D]') # floor days
+
+# create time series
+pd.Series(pd.date_range('2012-1-1', periods=3, freq='D'))
+pd.Series(pd.date_range('2012-1-1', periods=1, freq='D'))
+pd.Series(pd.date_range(start='2018-1-1', end='2018-05-01'))
+
+# general date functions. global variables. create a date.
+import datetime
+datetime.datetime.now()
+datetime.datetime.today() # now = today. both datetime.
+datetime.datetime.now().date()
+datetime.datetime.now().date().weekday()
+datetime.datetime.strptime('2018-06-25', "%Y-%m-%d")
+datetime.datetime.strptime('2018-06-25', "%Y-%m-%d").weekday() # monday=0, sunday=6
+datetime.datetime.strptime('2018-06-25', "%Y-%m-%d").weekday()
+
+# weekday functions
+df['Cweekday'] = df['Created'].dt.dayofweek
+df['Cweekday_name'] = df['Created'].dt.weekday_name
+df['Cdate_add'] = df['Created'] + datetime.timedelta(days=5)
+df['Cdate_add_2'] = df['Created'] + pd.DateOffset(days=5) # preferred, faster
+
+# dataframe week ending calculdated date column
+df['Cweek_ending'] = df['Created'] + pd.DateOffset(days=(6 - df['Created'].dt.dayofweek)) # not working
+df['Cweek_ending'] = df['Created'] + (6-df['Created'].dt.weekday.astype('timedelta64[D]'))
+
+type(df['Created'].dt.dayofweek)
+df['Created'].dt.weekday.astype('timedelta64[D]')
