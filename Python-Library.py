@@ -27,7 +27,7 @@ y.casefold()
 
 
 
-# list manipulation & indexing
+#### list manipulation & indexing
 y = 'bob'
 mylist = [x, y, 10, 5, '6']
 mylist[0]
@@ -65,7 +65,7 @@ x.__class__()
 mylist.__contains__(33) # boolean check
 
 
-# for loops & list arithmatic
+#### for loops & list arithmatic
 for i in mylist:
     print(i)
 mynums = [1,2,3]
@@ -92,7 +92,7 @@ for i in range(x):
 
 
     
-# navigate files
+#### navigate files
 import os
 os.getcwd()
 os.listdir('.')
@@ -100,15 +100,16 @@ os.chdir("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\")
 os.getcwd()
 
 
-# import files & create dataframe
+#### import files & create dataframe
 # https://www.datacamp.com/community/tutorials/python-excel-tutorial
 import pandas as pd
 ticketdata = pd.ExcelFile("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\incident.xlsx")
-print(ticketdata.sheet_names)
-df1 = ticketdata.parse()
+df = ticketdata.parse()
+df = pd.DataFrame(df)
+stores = pd.read_excel("C:\\Work\\Resources\\Store Deployment Schedule.xlsx", sheet_name="sql table")
 
 
-# dataframes
+#### dataframe EDA
 # https://www.shanelynn.ie/using-pandas-dataframe-creating-editing-viewing-data-in-python/
 my_data_frame = pd.DataFrame(
         {
@@ -118,10 +119,15 @@ my_data_frame = pd.DataFrame(
 )
 my_data_frame.shape
 my_data_frame.head()
+my_data_frame.tail()
 my_data_frame.dtypes
 my_data_frame['col_2']
 my_data_frame.describe()
-
+df.sample(3)
+df.dtypes
+df.query('Updates > 44')
+df[df['Updates'] > 44]
+pd.isnull(df)
 
 # github
 # https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/
@@ -129,7 +135,7 @@ import sys
 print(sys.path)
 
 
-# time series manipulation
+#### time series manipulation
 # https://towardsdatascience.com/basic-time-series-manipulation-with-pandas-4432afee64ea
 import pandas as pd
 from datetime import datetime
@@ -157,7 +163,7 @@ timestamp_date_rng
 # to continue
 
 
-# basic ide tips
+#### basic ide tips
 import matplotlib.pyplot as plt
 import numpy
 # from numpy import * - don't have to invoke package for each function
@@ -176,7 +182,7 @@ bob = 5
 
 
 
-# data science #1 - decision tree demo
+#### data science #1 - decision tree demo
 from sklearn import tree
 
 x = [[181, 80, 44], [177, 70, 43], [160,60,38]] # feed in body metrics
@@ -189,7 +195,7 @@ prediction = clf.predict([[190,70,43]]) # predict these
 print(prediction)
 tree.export_graphviz(clf)
 
-# visualize descision tree
+#### visualize descision tree
 # https://chrisalbon.com/machine_learning/trees_and_forests/visualize_a_decision_tree/
 import pydotplus
 from IPython.display import Image
@@ -205,10 +211,7 @@ os.environ["PATH"] += os.pathsep + 'C:\\Anaconda3\\Library\\bin\\graphviz'
 
 
 
-
-
-
-#### advanced dataframe operations ----
+#### ADVANCED DATAFRAME OPERATIONS ----
 # all here: https://www.datacamp.com/community/tutorials/pandas-tutorial-dataframe-python#question3
 # also refer to pandas.pydata.org for list of OO functions
 # R comparison: https://pandas.pydata.org/pandas-docs/stable/comparison_with_r.html
@@ -230,6 +233,8 @@ df.dtypes
 df.aggregate('Reopen count')
 df.boxplot('Updates')
 df.describe()
+df.sort_values('Priority')
+df.aggregate('Updates')
 
 # dataframe subsetting
 x = 5; y = 2
@@ -246,6 +251,16 @@ df.loc[0:5, ['Number', 'Category']]
 df.loc[0:x, z]
 print(df.at[0,'Number']) # use 'at' for single values
 print(df.iat[x,0]) # use 'at' for single values
+
+# dataframe filtering & sorting
+zzdf = df[df['Created']>'2018-06-06']
+zzdf = df[(df['Created']>'2018-06-06') & (df['Contact type']=='Phone')]
+zzdf = df[(df['Created']>'2018-06-06') & 
+          (df['Contact type']=='Phone')].sort_values(['Created'], ascending=False)
+zzdf = df[(df['Created']>'2018-06-06') & 
+          (df['Contact type']=='Phone')].sort_values(['Priority','Created'])
+zzdf = df[(df['Created']>'2018-06-06') & 
+          (df['Contact type']=='Phone')].sort_values(['Priority','Created'], ascending=[False,True])
 
 # dataframe create new calculated columns
 df['UpdateAvgByReassignment'] = df['Updates'] / (df['Reassignment count'] + 1)
@@ -280,45 +295,72 @@ out = df[df['Location'].str.contains("|".join(search_for))==True]
 out = df[df['Location'].str.contains("(?i)"+"|".join(search_for))==True]
 out = df[df['Location'].str.contains("(?i)"+"|".join(["hst","sos","utc"]))==True]
 
-print("something" + " " + "something else" + "and also these")
 print("(?i)"+"|".join(["hst","sos"]))
 
+# conditional column values
+import numpy as np
+df['Conditional_1'] = np.select(
+        condlist = [
+                (df['Updates'] > 5) & (df['assignee change counter'] > 4),
+                (df['Updates'] > 3) & (df['assignee change counter'] > 2)]
+        , choicelist = ['very high maintenance', 'high maintenance'])
 
-
-
-# regex label columns
-# conditional value columns...
-# create small 'label' table to join & filter, aggregate by...
+# regex column values
+df['Conditional_2'] = np.select(
+        condlist = [df['Location'].str.contains("(?i)NE")==True,
+                    df['Location'].str.contains("(?i)"+"|".join(search_for))==True]
+        , choicelist = ['ne region','store of interest']
+        , default = "--")
 
 # dataframe calculated columns with time & time conversions. datediff.
-df['my resolve time'] = df['Resolved'] - df['Created']
-df['my resolve time 2'] = (df['Resolved'] - df['Created']).astype('timedelta64[h]') # floor hours
-df['my resolve time 3'] = (df['Resolved'] - df['Created']).astype('timedelta64[D]') # floor days
+df['resolve time'] = df['Resolved'] - df['Created']
+df['resolve time hours'] = (df['Resolved'] - df['Created']).astype('timedelta64[h]') # floor hours
+df['resolve time days'] = (df['Resolved'] - df['Created']).astype('timedelta64[D]') # floor days
 
 # create time series
 pd.Series(pd.date_range('2012-1-1', periods=3, freq='D'))
 pd.Series(pd.date_range('2012-1-1', periods=1, freq='D'))
 pd.Series(pd.date_range(start='2018-1-1', end='2018-05-01'))
 
-# general date functions. global variables. create a date.
+# general date functions. global variables. convert series to date.
 import datetime
 datetime.datetime.now()
 datetime.datetime.today() # now = today. both datetime.
 datetime.datetime.now().date()
 datetime.datetime.now().date().weekday()
-datetime.datetime.strptime('2018-06-25', "%Y-%m-%d")
 datetime.datetime.strptime('2018-06-25', "%Y-%m-%d").weekday() # monday=0, sunday=6
-datetime.datetime.strptime('2018-06-25', "%Y-%m-%d").weekday()
+df['Cdate'] = pd.to_datetime(df['Created']).dt.date
 
 # weekday functions
 df['Cweekday'] = df['Created'].dt.dayofweek
 df['Cweekday_name'] = df['Created'].dt.weekday_name
 df['Cdate_add'] = df['Created'] + datetime.timedelta(days=5)
 df['Cdate_add_2'] = df['Created'] + pd.DateOffset(days=5) # preferred, faster
+df['Created'].dt.dayofweek
+df.drop(columns = ['Cdate_add','Cdate_add_2'], inplace=True)
 
-# dataframe week ending calculdated date column
-df['Cweek_ending'] = df['Created'] + pd.DateOffset(days=(6 - df['Created'].dt.dayofweek)) # not working
-df['Cweek_ending'] = df['Created'] + (6-df['Created'].dt.weekday.astype('timedelta64[D]'))
+# dataframe week start week ending
+df['Cweek_beginning'] = (df['Created'] - pd.to_timedelta(df['Created'].dt.dayofweek, unit='d')).dt.date
+df['Cweek_beginning2'] = (df['Created'] - pd.to_timedelta(df['Created'].dt.dayofweek, unit='d')).dt.normalize()
+df['Cweek_ending'] = (df['Created'].where( df['Created'] == 
+  (( df['Created'] + pd.tseries.offsets.Week(weekday=6) ) - pd.tseries.offsets.Week()), 
+  df['Created'] + pd.tseries.offsets.Week(weekday=6))).dt.normalize()
 
-type(df['Created'].dt.dayofweek)
-df['Created'].dt.weekday.astype('timedelta64[D]')
+# join tables
+stores = pd.read_excel("C:\\Work\\Resources\\Store Deployment Schedule.xlsx", sheet_name="sql table")
+stores.describe()
+joined = pd.merge(df, stores, how='left', left_on='BU', right_on='BU')
+joined = pd.merge(df, stores, how='left', on='BU')
+
+# not working. some duplicates.
+
+stores['BU'].unique()
+stores.BU.value_counts()
+stores['BU'].value_counts()
+stores.xs('BU', axis=1)
+
+
+#### to do:
+## find all NaN/nulls in column
+## difference between dataframes (anti-join?). 
+## subset dataframe by id in another table
