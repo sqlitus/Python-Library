@@ -7,7 +7,7 @@ cd
 dir -fil "*.md"
 
 
-git commit <case sensitive file.ext> -m "message"
+git commit case_sensitive_filename.ext -m "message"
 
 git push origin master
 
