@@ -351,14 +351,19 @@ stores = pd.read_excel("C:\\Work\\Resources\\Store Deployment Schedule.xlsx", sh
 stores.describe()
 joined = pd.merge(df, stores, how='left', left_on='BU', right_on='BU')
 joined = pd.merge(df, stores, how='left', on='BU')
-
 # not working. some duplicates.
 
+# column (series) unique values & table count, etc
 stores['BU'].unique()
 stores.BU.value_counts()
 stores['BU'].value_counts()
 stores.xs('BU', axis=1)
+df['BU'].value_counts()
+df['BU'].value_counts(normalize=True)
+len(stores['BU'].unique())
 
+# clear workspace
+%reset
 
 #### to do:
 ## find all NaN/nulls in column
