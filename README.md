@@ -1,8 +1,14 @@
 # Python-Library
 
 dir
+
 cd
 
-git commit "full filepath" -m "message"
+dir -fil "*.md"
+
+
+git commit <case sensitive file.ext> -m "message"
+
 git push origin master
+
 git pull origin master
