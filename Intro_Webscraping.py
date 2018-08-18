@@ -44,7 +44,7 @@ soup.find('p')  # finds first instance
 
 
 
-# classes and ids
+### classes and ids ###
 page = requests.get("http://dataquestio.github.io/web-scraping-pages/ids_and_classes.html")
 soup = BeautifulSoup(page.content, 'html.parser')
 soup
@@ -54,14 +54,19 @@ print(soup.prettify())
 soup.find_all('p', class_='outer-text')
 
 # search all class
+soup.find_all(class_="outer-text")  # same thing as above
 soup.find_all(class_="outer-text")
-soup.find_all()
 
 # search by id
 soup.find_all(id="first")
 
+
+# Using CSS Selectors ###
+
 # find all p tags inside div
 soup.select("div p")  # returns list
+soup.select("body div p")  # body w/ child div w/ child p
+soup.select("p b")  # paragraph with bold text inside
 
 # lambda one line function
 myfunc = lambda x, y: x + y
