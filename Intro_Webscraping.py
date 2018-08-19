@@ -5,70 +5,97 @@ Ref: https://www.dataquest.io/blog/web-scraping-tutorial-python/
 
 """
 
+# full webscrape, parse into dataframe, & analysis ###
+
 import requests
+from bs4 import BeautifulSoup as bs
+import re  # regex
 
-page = requests.get("http://dataquestio.github.io/web-scraping-pages/simple.html")
-page
-page.status_code  # 200 means downloaded successfully, 4.* or 5.* means error
+# get page
+mypage = requests.get("https://www.crummy.com/software/BeautifulSoup/bs4/doc/")
+mypage.status_code  # 200 means d/l successful
 
-page.content
-
-from bs4 import BeautifulSoup
-soup = BeautifulSoup(page.content, 'html.parser')
-print(soup.prettify())  # print HTML content
-
-
-# finding 1 single line
-list(soup.children)  # soup.children is a list iterator
-[type(item) for item in list(soup.children)]
-html = list(soup.children)[2]
-list(html.children)
-for i, child in enumerate(list(html.children)):
-    print(i, child)
-    
-body = list(html.children)[3]
-list(body.children)  # all content in index 1
-
-p = list(body.children)[1]
-p
-p.get_text()
-
-
-# finding all instances of a tag
-soup.find_all('p')  # returns a list
-soup.find_all('head')
-soup.find_all('title')
-
-soup.find_all('p')[0].get_text()  # use on single element of list
-soup.find('p')  # finds first instance
-
-
-
-### classes and ids ###
-page = requests.get("http://dataquestio.github.io/web-scraping-pages/ids_and_classes.html")
-soup = BeautifulSoup(page.content, 'html.parser')
-soup
+# parse into beautifulsoup object
+soup = bs(mypage.content, 'html.parser')
 print(soup.prettify())
 
-# search all p(aragraph) tag w/ class
-soup.find_all('p', class_='outer-text')
+# get all links
+for link in soup.find_all('a'):
+    print(link.get('href')) # hastag means link within page
 
-# search all class
-soup.find_all(class_="outer-text")  # same thing as above
-soup.find_all(class_="outer-text")
+# finding tags
+soup.find_all('p')
+soup.find_all('title')
+soup.find_all('a')
 
-# search by id
-soup.find_all(id="first")
+# using regex within the soup
+soup.find_all(re.compile("(^a$|div)"))
 
 
-# Using CSS Selectors ###
 
-# find all p tags inside div
-soup.select("div p")  # returns list
-soup.select("body div p")  # body w/ child div w/ child p
-soup.select("p b")  # paragraph with bold text inside
+# Weather Data Example ###
+# scraping from: https://forecast.weather.gov/MapClick.php?lat=37.7772&lon=-122.4168#.W3hR3OhKhhE
 
-# lambda one line function
-myfunc = lambda x, y: x + y
-myfunc(1,2)  # 1 + 2
+# download webpage
+page = requests.get("https://forecast.weather.gov/MapClick.php?lat=37.7772&lon=-122.4168#.W3hR3OhKhhE")  # requests.models.Response
 
+# create beautifulsoup class to parse webpage
+soup = bs(page.content, 'html.parser')  # bs4.BeautifulSoup
+
+# find the div with the 7 day forecast
+seven_day = soup.find(id="seven-day-forecast")  # bs4.element.Tag
+
+# find each individual forecast within the 7 day forecast div
+forecast_items = seven_day.find_all(class_="tombstone-container")  # bs4.element.ResultSet
+
+# extract & print first forecast item
+tonight = forecast_items[0]  # bs4.element.Tag
+print(tonight.prettify())  # string
+
+# extract & print individual information from forecast item
+period = tonight.find(class_="period-name").get_text()  # string
+short_desc = tonight.find(class_="short-desc").get_text()  # string
+temp = tonight.find(class_="temp").get_text()  # string
+print(period)
+print(short_desc)
+print(temp)
+
+# extract title
+img = tonight.find('img')  #bs4.element.Tag
+desc = img['title']  # string. attribute as key
+print(desc)
+
+# select all items with class 'period-name' nested inside items of class 'tombstone-container'
+period_tags = seven_day.select(".tombstone-container .period-name")  # list. each element bs4.element.Tag
+periods = [pt.get_text() for pt in period_tags]  # list comprehension, call get_text() on each object
+periods
+
+# get each short description inside 'tombstone-container'
+short_descs = [sd.get_text() for sd in seven_day.select(".tombstone-container .short-desc")]  # list
+temps = [t.get_text() for t in seven_day.select(".tombstone-container .temp")]  # list
+descs = [d["title"] for d in seven_day.select(".tombstone-container img")]  # string
+
+print(short_descs)
+print(temps)
+print(descs)
+
+# combine extracted data (mostly in lists) into a single dataframe
+import pandas as pd
+weather = pd.DataFrame({
+        "period": periods,
+        "short_desc": short_descs,
+        "temp": temps,
+        "desc":descs
+    })
+weather
+
+# regex extract temperatures & create numeric calculated column
+temp_nums = weather["temp"].str.extract("(?P<temp_num>\d+)", expand=False)
+weather["temp_num"] = temp_nums.astype('int')
+temp_nums
+
+# analysis
+weather['temp_num'].mean()
+
+# create text calculated column
+weather['night time'] = weather['period'].str.contains("night", case=False)
