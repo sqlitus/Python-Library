@@ -99,3 +99,4 @@ weather['temp_num'].mean()
 
 # create text calculated column
 weather['night time'] = weather['period'].str.contains("night", case=False)
+
