@@ -445,9 +445,12 @@ myfunc(1, 2)  # 1 + 2
 
 
 
-##############################
-## Official Python Tutorial ##
-##############################
+#####################################################
+############## Official Python Tutorial #############
+### https://docs.python.org/3/tutorial/index.html ###
+#####################################################
+
+
 
 #### 3.1.2 Strings
 
@@ -471,8 +474,131 @@ print('py' 'thon', 'struff')  # separates w/ space
 # index (subscript) strings
 word = 'Python'
 word[0]     # at place 0
-word[:2]    # first 2 chars
+word[:2]    # first 2 chars slice
 word[-1]    # last char
 word[-2]    # second to last char
-word[-2:]   # last 2 chars
+word[-2:]   # last 2 chars slice. omitted second index = size of string
+word[-2:6]  # (same as above)
 
+print('''
+'slice from i to j is all chars between edges'
+ +---+---+---+---+---+---+
+ | P | y | t | h | o | n |
+ +---+---+---+---+---+---+
+ 0   1   2   3   4   5   6
+-6  -5  -4  -3  -2  -1
+''')
+
+len(word)  # length of string
+str(555)  # convert to string
+555
+
+
+
+#### 3.1.3 Lists
+
+
+# indexes just like strings
+squares = [1, 4, 9, 16, 25]
+squares
+squares[-3:]
+squares[:]
+
+# concatenate list
+squares + [1, 2, 3]
+
+# mutable - change their content
+squares[0] = "lol"
+squares
+
+# add new items
+squares.append(1)
+squares.append(['another', 'list'])  # only appends 1 object. nested list
+
+# assignment to slices changes object
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+# ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+letters[0] = 'A'
+# ['A', 'b', 'c', 'd', 'e', 'f', 'g']
+letters[-3:] = []  # removes items
+# Out[75]: ['A', 'b', 'c', 'd']
+
+len(letters)
+
+# slice list within list
+a = ['a', 'b', 'c']
+n = [1, 2, 3]
+x = [a, n]
+x[0][2]  # int
+# Out[81]: 'c'
+x[0][:2] # list
+# Out[88]: ['a', 'b']
+a
+a[:] = ['slice', 'notation']  # still writes over list
+
+x[0][:2] = ['new', 'values']
+x
+# Out[92]: [['new', 'values', 'c'], [1, 2, 3]]
+
+
+
+#### 3.2 first steps towards programming
+
+a, b, c = 0, 1, 'hi mom'  # multiple variable assignment
+while a < 10:
+    print(a)
+    a, b = b, a+b  # right hand side is evaluated before any variable assignments occur
+
+a, b = 0, 1
+while a < 10:
+    print(a, end = '--')
+    a, b = b, a+b
+
+
+
+#### 4. More Control Flow Tools
+
+
+# 4.1 if
+x = int(input("enter a number"))
+if x < 0:
+    x = 0
+    print('negative chanted to 0')
+elif x < 10:
+    print('x is less than 10')
+elif x >= 10 and x < 20:
+    print('x is between 10 & 20')
+else:
+    print(x, 'is more than 20')
+
+
+# 4.2 for
+words = ['cat', 'window', 'defenestrate']
+for word in words:  # iterates over items in the sequence (for each)
+    print(word, len(word))
+
+for word in words[:]:  # requires slice copy? otherwise infinite loop
+    if len(word) > 6:
+        words.insert(0, word)
+words
+
+
+# 4.3 range
+for i in range(5):  # 0-4
+    print(i)
+for i in range(0, 10, 2):  # never includes end point
+    print(i)
+for i in range(10, 1, -2):
+    print(i)
+
+a = ['Mary', 'had', 'a', 'little', 'lamb']
+for i in range(len(a)):  # index of list
+    print(i, a[i])
+for item in a:  # easy solution
+    print(item)
+
+# enumerate
+list(enumerate(a, start = 1))  # default start 0
+
+
+# 4.4 break and continue
