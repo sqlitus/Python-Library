@@ -441,3 +441,38 @@ soup.select("p b")  # paragraph with bold text inside
 myfunc = lambda x, y: x + y
 myfunc(1, 2)  # 1 + 2
 
+
+
+
+
+##############################
+## Official Python Tutorial ##
+##############################
+
+#### 3.1.2 Strings
+
+# raw strings
+print('some stuff here')
+print('C:\some\name')
+print(r'C:\some\name')  # preface with 'r' for raw string
+
+# span multiple lines
+print('''some things
+and other things
+printed on new lines''')
+
+# concatenate
+print('my' + ' ' + 'house' + ' is ' + str(5))
+'py' 'thon'
+print('several together '
+      'have themselves joined')
+print('py' 'thon', 'struff')  # separates w/ space
+
+# index (subscript) strings
+word = 'Python'
+word[0]     # at place 0
+word[:2]    # first 2 chars
+word[-1]    # last char
+word[-2]    # second to last char
+word[-2:]   # last 2 chars
+
