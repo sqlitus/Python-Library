@@ -602,3 +602,125 @@ list(enumerate(a, start = 1))  # default start 0
 
 
 # 4.4 break and continue
+
+# for 'else'
+for n in range(2, 10):
+    for x in range(2, n):
+        if n % x == 0:
+            print(n, 'equals', x, '*', n//x)
+            break
+    else:  # runs when loop breaks w/o 'break' statement
+        print(n, 'is a prime number')
+
+for n in range(5):
+    if n == 3:
+        print('is 3')
+    else:
+        print('not 3')
+    if n == 4:
+        print('4 found. breaking loop')
+        break  # jumps out of loop
+else:
+    print('end of loop')
+
+# continue (go to beginning of loop)
+for num in range(2, 10):
+    if num % 2 == 0:
+        print(num, "is even")
+        continue
+    print('number found')
+
+
+# 4.5 pass
+
+class MyEmptyClass:
+    pass  # empty placeholder
+
+def initlog(*args):
+    pass  # silently ignored
+
+
+# 4.6 defining functions
+def fib(n = 5):
+    """(Here is the docstring for this function.) Creates fibonacci sequence up to (not including) n
+
+    Uses some clever variable reassignment + addition to create the sequence.
+    """
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b
+    print()
+
+fib(10)
+fib()
+
+print(fib.__doc__)  # prints function docstring
+
+
+# 4.7.7 Function Annotations
+def f(ham: str, eggs: str = 'eggs') -> str:  # -> str is return annotation. doesn't affect anything.
+    print("Annotations:", f.__annotations__)
+    print("Arguments: ", ham, eggs, sep=';')
+    return ham + ' and ' + eggs
+
+f('myhamvariable')
+
+
+
+### 5. Data Structures ###
+
+
+# 5.1 more lists
+a = [1, 2, 3]
+# Out[69]: [1, 2, 3]
+a.append('555')  # just 1 item
+# Out[71]: [1, 2, 3, '555']
+a.extend(['another', 'list', 'items'])  # multiple items
+# Out[73]: [1, 2, 3, '555', 'another', 'list', 'items']
+a.insert(1, 'my insertion')  # insert at index
+# Out[77]: [1, 'my insertion', 2, 3, '555', 'another', 'list', 'items']
+a.remove('my insertion')  # remove by value
+# Out[79]: [1, 2, 3, '555', 'another', 'list', 'items']
+
+a.pop()  # removes & returns the [last] item in the list
+a.pop(1)
+# Out[81]: 'items'
+# Out[82]: 2
+# resulting list:
+# Out[85]: [1, 3, '555', 'another', 'list']
+
+a.index('555')  # returns index
+a.index('555', 1)  # finds next '555' starting at position 1
+# Out[87]: 2
+a.count('another')  # counts value
+
+''.join(str(item) for item in a)  # concatenates list items
+[str(item) for item in a]  # converts list items to str
+list(map(str, a))          # converts list items to str
+# Out[133]: ['1', '3', '555', 'another', 'list']
+
+a2.sort()  # sorts nums then chars
+# Out[135]: ['1', '3', '555', 'another', 'list']
+a2.reverse()
+# Out[137]: ['list', 'another', '555', '3', '1']
+a2.copy()
+a2[:]  # also 'shallow' copy
+# Out[139]: ['list', 'another', '555', '3', '1']
+
+a2.extend(['test', '44'])
+# Out[142]: ['list', 'another', '555', '3', '1', 'test', '44']
+a2.sort()
+# Out[144]: ['1', '3', '44', '555', 'another', 'list', 'test']
+
+
+# 5.2 lists as stacks
+stack = [3, 4, 5]
+stack.pop()
+# Out[147]: 5  # returned
+# Out[148]: [3, 4]
+stack.append(6)
+# Out[152]: [3, 4, 6]
+
+
+# 5.3 lists as queues
