@@ -640,38 +640,12 @@ def initlog(*args):
     pass  # silently ignored
 
 
-# 4.6 defining functions
-def fib(n = 5):
-    """(Here is the docstring for this function.) Creates fibonacci sequence up to (not including) n
 
-    Uses some clever variable reassignment + addition to create the sequence.
-    """
-    a, b = 0, 1
-    while a < n:
-        print(a, end=' ')
-        a, b = b, a+b
-    print()  # function with no return statement will return 'None'
-
-fib(10)
-fib()
-print(fib.__doc__)  # prints function docstring
-
-def fib2(n=5):
-    """Fib function returning a list"""
-
-    result = []
-    a, b = 0, 1
-    while a < n:
-        result.append(a)  # equivalent to result = result + a
-        a, b = b, a+b
-    return result
-fib2(5)
-
-
+### 4.6 Defining Functions ###
 ### 4.7 More on Defining Functions ###
 
 
-# 4.7.1 Default Argument Values
+### 4.7.1 Default Argument Values
 def ask_ok(prompt, retries=4, reminder="try again."):
     while True:
         ok = input(prompt)
@@ -703,9 +677,84 @@ def f(a, L=None):
 print(f(1))
 
 
-# 4.7.2 Keyword Arguments
-# (invoking arguments using parameter name 'kwarg=value') as opposed to position
+### 4.7.2 Keyword Arguments
 
+# (invoke arguments using parameter name 'kwarg=value')
+
+# *tuples & **dictionaries as optional formal parameters
+def cheeseshop(kind, *arguments, **keywords):
+    print("do you have any", kind, "?")
+    print("I'm sorry, we're all out of", kind)
+    for arg in arguments:
+        print(arg)
+    print("-" * 40)
+    for kw in keywords:
+        print(kw, ":", keywords[kw])
+
+cheeseshop("something", "arg 1?", "arg 2?", person="my keyword 1")
+cheeseshop("only required param")
+
+
+# 4.7.3 Arbitrary Argument Lists
+def concat(*args, sep="/"):  # *arbitrary length
+    return sep.join(args)
+
+concat("earth", "venus", "mars")
+
+
+# 4.7.4 Unpacking *Argument Lists
+list(range(3,6))
+args = [3, 6]
+list(range(*args))  # unpacking from a list in function call
+
+def parrot(voltage, action='jump'):
+    print("This parrot wouldn't", action, end=' ')
+    print("if you put", voltage, "volts through it")
+
+my_dictionary = {"voltage": "10,000", "action": "jump"}
+parrot(**my_dictionary)  # unpack from dictionary
+
+
+# 4.7.5 Lambda Expressions
+def incrementor(n):
+    return lambda x: x + n
+
+f = incrementor(10)  # adds n to whatever num is passed
+f(2)  # 12
+
+# pass function as argument
+pairs = [(1, 'one'), (2, 'two'), (3, 'three'), (4, 'four')]
+
+pairs.sort(key=lambda pair: pair[1])
+# Out[69]: [(4, 'four'), (1, 'one'), (3, 'three'), (2, 'two')]
+
+
+# 4.7.6 Documentation Strings
+def fib(n = 5):
+    """(Here is the docstring for this function.) Creates fibonacci sequence up to (not including) n
+
+    Uses some clever variable reassignment + addition to create the sequence.
+    """
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b
+    print()  # function with no return statement will return 'None'
+
+fib(10)
+fib()
+print(fib.__doc__)  # prints function docstring
+
+def fib2(n=5):
+    """Fib function returning a list"""
+
+    result = []
+    a, b = 0, 1
+    while a < n:
+        result.append(a)  # equivalent to result = result + a
+        a, b = b, a+b
+    return result
+fib2(5)
 
 
 # 4.7.7 Function Annotations
