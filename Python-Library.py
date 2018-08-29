@@ -650,12 +650,62 @@ def fib(n = 5):
     while a < n:
         print(a, end=' ')
         a, b = b, a+b
-    print()
+    print()  # function with no return statement will return 'None'
 
 fib(10)
 fib()
-
 print(fib.__doc__)  # prints function docstring
+
+def fib2(n=5):
+    """Fib function returning a list"""
+
+    result = []
+    a, b = 0, 1
+    while a < n:
+        result.append(a)  # equivalent to result = result + a
+        a, b = b, a+b
+    return result
+fib2(5)
+
+
+### 4.7 More on Defining Functions ###
+
+
+# 4.7.1 Default Argument Values
+def ask_ok(prompt, retries=4, reminder="try again."):
+    while True:
+        ok = input(prompt)
+        if ok in ('y', 'ye', 'yes'):
+            return True
+        if ok in ('n', 'no', 'nop', 'nope'):
+            return False
+        retries = retries - 1
+        if retries < 0:
+            raise ValueError('invalid user response')
+        print(reminder)
+ask_ok("here is a yes or no question")
+
+# default argument that will change
+def f(a, L=[]):  # default arg value evaluated once
+    L.append(a)  # lists are mutable, so this will change the value on subsequent calls
+    return L
+
+print(f(1))
+print(f(2))  # default param list accumulates each time function is run
+
+# default argument not shared between calls (default value will reset each time)
+def f(a, L=None):
+    if L is None:
+        L = []
+    L.append(a)
+    return L
+
+print(f(1))
+
+
+# 4.7.2 Keyword Arguments
+# (invoking arguments using parameter name 'kwarg=value') as opposed to position
+
 
 
 # 4.7.7 Function Annotations
