@@ -452,6 +452,31 @@ myfunc(1, 2)  # 1 + 2
 
 
 
+#### 3.1 Using Python as a Calculator
+
+# 3.1.1 Numbers
+2 + 2
+50 - 5 * 6
+(50 - 5 * 6) / 4
+8 / 5  # division always returns float
+# Out[12]: 1.6
+8 / 4  # even if done with ints
+# Out[13]: 2.0
+
+16 // 5  # floor division
+# Out[14]: 3
+16 % 5   # modulo remainder
+# Out[16]: 1
+16 == (16 // 5) * 5 + (16 % 5)  # floor division result * divisor + remainder == first number
+# Out[19]: True
+
+3 ** 3  # powers
+
+5 + 5 + 2
+_ + 3  # last printed expression = '_' char
+
+
+
 #### 3.1.2 Strings
 
 # raw strings
