@@ -813,13 +813,287 @@ a2.sort()
 # Out[144]: ['1', '3', '44', '555', 'another', 'list', 'test']
 
 
-# 5.2 lists as stacks
+# 5.1.1 lists as stacks
 stack = [3, 4, 5]
-stack.pop()
+stack.pop()  # Last-In-First-Out
 # Out[147]: 5  # returned
 # Out[148]: [3, 4]
 stack.append(6)
 # Out[152]: [3, 4, 6]
 
 
-# 5.3 lists as queues
+# 5.1.2 lists as queues
+from collections import deque
+myqueue = ['Eric', 'John', 'Michael']
+queue = deque(myqueue)  # <class 'collections.deque'>
+
+queue.popleft()  # First-In-First-Out
+# returns 'Eric'
+# deque(['John', 'Michael'])
+queue.append('Bobbert')
+# deque(['John', 'Michael', 'Bobbert'])
+for item in queue:  # functions like list
+    print(item)
+
+
+
+### 5.1.3 List Comprehensions
+
+# this...
+squares = []
+for x in range(10):
+    squares.append(x**2)
+
+# [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+# ...same as...
+squares = list(map(lambda x: x**2, range(10)))
+
+# ...same as (list comprehension)
+squares = [x**2 for x in range(10)]
+
+
+# this...
+[(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]            # nested for loops
+# [(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+
+# ...is same as
+combs = []
+for x in [1, 2, 3]:
+    for y in [3, 1, 4]:
+        if x !=y:
+            combs.append((x, y))
+
+
+mylistcomp = [x for x in [1,2,3] for y in [5,6]]                # just iterates through x
+# [1, 1, 2, 2, 3, 3]
+
+mylistcomp = [y for x in [1,2,3] for y in [5,6]]                # just iterates through  y
+# [5, 6, 5, 6, 5, 6]
+
+mylistcomp_crossproducts = [x*y for x in [1, 2, 3] for y in [5, 6]]
+# [5, 6, 10, 12, 15, 18]
+
+mylistcomp_crossproducts = [x*y for x in [1, 2, 3] for y in [5, 6] if x*y >= 10]
+# [10, 12, 15, 18]
+
+mylistcomp_crossproducts = [x*y for x in [1, 2, 3] for y in [5, 6] if 10 <= x*y <= 15]   # chained comparison operators
+# [10, 12, 15]
+
+vec = [-4, -2, 0, 2, 4]
+[item*2 for item in vec]             # new list with doubled values
+[item for item in vec if item >= 0]  # filter the list to just include positive numbers
+[abs(item) for item in vec]          # apply a function to all elements
+
+freshfruit = ['  banana', '  loganberry  ', 'passion fruit  ']
+[x.strip() for x in freshfruit]      # call a method on each element
+[(x, x**2) for x in range(6)]        # create a tuple w/ calculations
+# [(0, 0), (1, 1), (2, 4), (3, 9), (4, 16), (5, 25)]
+
+# flatten a list using a listcomp with two 'for'
+vec = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+[num for elem in vec for num in elem]
+
+# complex expressions & nested functions in list comprehensions
+from math import pi
+[str(round(pi, i)) for i in range (1, 6)]
+
+
+
+### 5.1.4 Nested List Comprehensions
+
+matrix = [
+    [1,2,3,4],
+    [5,6,7,8],
+    [9,10,11,12]
+]
+
+[row for row in matrix]
+[i for i in range(4)]
+
+# this...
+[[row[i] for row in matrix] for i in range(4)]   # transposes matrix
+# [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]]
+
+# ...same as
+transposed = []
+for i in range(4):
+    transposed.append(row[i] for row in matrix)
+
+# ...same as
+transposed = []
+for i in range(4):
+    transposed_row = []
+    for row in matrix:
+        transposed_row.append(row[i])
+    transposed.append(transposed_row)
+
+transposed
+# [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]]
+
+# ...same as zip: built in function to transpose
+list(zip(*matrix))
+# [(1, 5, 9), (2, 6, 10), (3, 7, 11), (4, 8, 12)]
+
+
+
+# 5.2 The del statement
+
+# remove item from list by index
+a = [-1, 1, 66, 33, 33, 1234]
+del a[0]
+# [1, 66, 33, 33, 1234]
+del a [2:4]
+# [1, 66, 1234]
+del a[:]
+# []
+del a
+a
+# NameError: name 'a' is not defined
+
+
+
+### 5.3 Tuples and Sequences
+
+t = 12345, 54321, 'hello!'      # a tuple definition doesn't need parenthesis
+t = (12345, 54321, 'hello!')    # same thing
+
+u = t, ('another', 'tuple')
+# ((12345, 54321, 'hello!'), ('another', 'tuple'))      # nested
+
+t[0] = "won't work. tuples are immutable"
+# File "<input>", line 1, in <module>
+
+# but tuples can hold mutable objects
+list1 = [1,2,3]
+list2 = [4,4,4]
+v = (list1, list2)
+# ([1, 2, 3], [4, 4, 4])
+
+list1.append(5)
+v
+# ([1, 2, 3, 5], [4, 4, 4])     # changes to list variable shown in tuple containing it
+
+
+empty = ()
+# ()
+singleton = ('hello', )         # tuples w/ 1 item require comma
+# ('hello',)
+two_things = ('hello', 'how are you')
+# ('hello', 'how are you')
+
+
+# sequence unpacking. put tuple values into variables
+t
+# (12345, 54321, 'hello!')
+x, y, z = t             # must be same # of items
+x, y, z
+# (12345, 54321, 'hello!')
+x
+# 12345
+
+a, b = t[:2]            # unpack variable # of items
+a, b
+# (12345, 54321)
+
+
+
+### 5.4 Sets ###
+
+basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}       # create with {}
+mybasket = set(['apple', 'apple', 'orange'])                            # create with set([list])
+
+basket
+# {'banana', 'pear', 'orange', 'apple'}
+mybasket
+# {'orange', 'apple'}
+
+
+print(basket)       # sets are unique and unordered
+'orange' in basket  # membership testing
+# True
+'bob' in basket
+# False
+
+basket - mybasket
+# {'pear', 'banana'}
+
+a = set('abracadabra')
+b = set('alacazam')
+
+a
+# {'a', 'c', 'r', 'd', 'b'}
+b
+# {'a', 'c', 'm', 'l', 'z'}
+
+# set difference
+a - b
+# {'b', 'r', 'd'}
+
+# set union
+a | b
+# {'a', 'c', 'r', 'm', 'l', 'd', 'b', 'z'}
+
+# set intersect
+a & b
+# {'a', 'c'}
+
+# set XOR
+a ^ b
+# {'r', 'm', 'b', 'l', 'z', 'd'}
+
+# set comprehensions
+a = {x for x in 'abracadabra'}
+# {'a', 'c', 'r', 'd', 'b'}
+
+b = {x for x in 'abracadabra' if x not in 'abc'}
+# {'r', 'd'}
+
+
+
+### 5.5. Dictionaries ###
+
+
+
+
+
+
+
+
+
+
+### Interlude - playing with regex ###
+import re
+mystring = "this is the string I will search with regex. It has 50+ chars. All chars."
+re.findall("bob", mystring)
+re.search("bob", mystring)
+re.search("\.", mystring)
+re.findall("\.", mystring)
+re.findall("(?i)w.*?l{2}", mystring)
+re.search("(?i)w.*?l{2}", mystring)
+re.sub("(?i)will", "bobbert", mystring)
+re.findall("\d\d", mystring)
+re.findall("\\d\\d", mystring)  # same thing??
+
+mydataframe = {'col1': [1,2,3,4],
+               'col2': ['here are some values', 'in the column', 'puppies 555', None]}
+
+# none of this working
+import pandas as pd
+mydataframe['find num'] = mydataframe['col2'].apply(re.findall('\d\d'))
+
+search = []
+for values in mydataframe['col2']:
+    search.append(re.search('\d+', values).group())
+
+mydataframe['col2'].str.extract('\d+')
+
+### End interlude ###
+
+
+
+
+
+
+
+
