@@ -444,6 +444,37 @@ myfunc(1, 2)  # 1 + 2
 
 
 
+### Interlude - playing with regex ###
+import re
+mystring = "this is the string I will search with regex. It has 50+ chars. All chars."
+re.findall("bob", mystring)
+re.search("bob", mystring)
+re.search("\.", mystring)
+re.findall("\.", mystring)
+re.findall("(?i)w.*?l{2}", mystring)
+re.search("(?i)w.*?l{2}", mystring)
+re.sub("(?i)will", "bobbert", mystring)
+re.findall("\d+", mystring)
+re.findall("\\d+", mystring)  # same thing??
+
+mydataframe = {'col1': [1,2,3,4],
+               'col2': ['here are some values', 'in the column', 'puppies 555', None]}
+
+# none of this working
+import pandas as pd
+mydataframe['find num'] = mydataframe['col2'].apply(re.findall('\d\d'))
+
+search = []
+for values in mydataframe['col2']:
+    search.append(re.search('\d+', values).group())
+
+mydataframe['col2'].str.extract('\d+')
+
+### End interlude ###
+
+
+
+
 
 #####################################################
 ############## Official Python Tutorial #############
@@ -1077,48 +1108,4 @@ b = {x for x in 'abracadabra' if x not in 'abc'}
 
 
 ### 5.5. Dictionaries ###
-
-
-
-
-
-
-
-
-
-
-### Interlude - playing with regex ###
-import re
-mystring = "this is the string I will search with regex. It has 50+ chars. All chars."
-re.findall("bob", mystring)
-re.search("bob", mystring)
-re.search("\.", mystring)
-re.findall("\.", mystring)
-re.findall("(?i)w.*?l{2}", mystring)
-re.search("(?i)w.*?l{2}", mystring)
-re.sub("(?i)will", "bobbert", mystring)
-re.findall("\d\d", mystring)
-re.findall("\\d\\d", mystring)  # same thing??
-
-mydataframe = {'col1': [1,2,3,4],
-               'col2': ['here are some values', 'in the column', 'puppies 555', None]}
-
-# none of this working
-import pandas as pd
-mydataframe['find num'] = mydataframe['col2'].apply(re.findall('\d\d'))
-
-search = []
-for values in mydataframe['col2']:
-    search.append(re.search('\d+', values).group())
-
-mydataframe['col2'].str.extract('\d+')
-
-### End interlude ###
-
-
-
-
-
-
-
 
