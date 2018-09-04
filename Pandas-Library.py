@@ -252,6 +252,7 @@ import_from_excel
 
 
 
+
 #############################################
 ############## Pandas Cookbook ##############
 ## https://github.com/jvns/pandas-cookbook ##
@@ -305,4 +306,42 @@ football['team'].value_counts()
 
 top_10_teams_by_appearance = football['team'].value_counts()
 top_10_teams_by_appearance
-top_10_teams_by_appearance.plot(kind='bar')
+top_10_teams_by_appearance.plot(kind='bar')  # not working on home k pc
+
+
+
+### Chapter 3: Selecting more data ###
+
+
+# 3.1 Filtering (Subsetting)
+subset_bears = football[football['team'] == "Bears"]
+
+football['team'] == 'Bears'  # returns boolean series
+
+
+# multiple filters
+bears = football['team'] == 'Bears'  # boolean series 1
+high_wins = football['wins'] >= 10   # boolean series 2
+football[bears & high_wins]          # True for both. Same as...
+football[(football['team'] == 'Bears') & (football['wins'] >= 10)]  # REQUIRES PARENTHESIS
+
+# df slice: chaining row & column filters
+football[football['team'].isin(['Bears', 'Lions'])][['team', 'wins', 'losses']]  # double brackets for df slice w/ column filters
+football[football['team'].isin(['Bears', 'Lions'])]['team']                      # single brackets to grab 1 series
+
+# 3.2 Filtering Series (internally numpy arrays)
+pd.Series([1, 2, 3])         # pandas.core.series.Series
+np.array([1, 2, 3])          # numpy.ndarray
+pd.Series([1, 2, 3]).values  # numpy.ndarray
+
+np.array([1, 2, 3])[np.array([1, 2, 3]) != 2]  # subset arrays like series
+football['team'].value_counts()
+
+
+complaints = pd.read_csv("C:\\Users\\Kelley\\PycharmProjects\\Python-Library\\Data\\311_Service_Requests_from_2010_to_Present.csv")
+complaints
+
+# count categorical values (series)
+complaints['Complaint Type'].value_counts()[:10]  # top 10 complaint types
+complaints[complaints['Complaint Type'] == 'Noise - Residential']['Borough'].value_counts()  # count of filter: noise complaints by: borough
+
