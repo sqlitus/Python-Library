@@ -1109,3 +1109,153 @@ b = {x for x in 'abracadabra' if x not in 'abc'}
 
 ### 5.5. Dictionaries ###
 
+# create & add to dictionary
+tel = {'jack': 4098, 'sape': 4139}  # create dict
+tel['guido'] = 4127                 # add to dict
+
+tel  # dict
+# Out[4]: {'jack': 4098, 'sape': 4139, 'guido': 4127}
+
+# retrieve element
+tel['jack']  # int
+# Out[8]: 4098
+
+del tel['sape']
+tel['irv'] = 4127
+tel
+# Out[11]: {'jack': 4098, 'guido': 4127, 'irv': 4127}
+
+list(tel)  # returns list of iterable
+# Out[13]: ['jack', 'guido', 'irv']
+
+sorted(tel)  # returns sorted list
+# Out[14]: ['guido', 'irv', 'jack']
+
+'bob' in tel
+# Out[16]: False
+
+
+# build dict with constructor
+dict([('sape', 4139), ('guido', 4127), ('jack', 4098)])
+# Out[17]: {'sape': 4139, 'guido': 4127, 'jack': 4098}
+dict(sape=4139, guido=4127, jack=4098)
+# Out[19]: {'sape': 4139, 'guido': 4127, 'jack': 4098}
+
+# dict comprehension
+{x: x**2 for x in (2, 4, 6)}  # key:value for key in (tuple)
+# Out[18]: {2: 4, 4: 16, 6: 36}
+
+dict(sape=4139, guido=4127, jack=4098)
+# Out[19]: {'sape': 4139, 'guido': 4127, 'jack': 4098}
+
+
+
+### 5.6 Looping Techniques
+
+# dict: retrieve key + value with .items()
+knights = {'gallahad': 'the pure', 'robin': 'the brave'}
+for k, v in knights.items():
+    print(k, v)
+# gallahad the pure
+# robin the brave
+
+# dict: retrieve index + key with enumerate()
+for k, v in enumerate(knights):
+    print(k, v)
+# 0 gallahad
+# 1 robin
+
+# list: retrieve index + value with enumerate
+for i, v in enumerate(['tic', 'tac', 'toe']):
+    print(i, v)
+# 0 tic
+# 1 tac
+# 2 toe
+
+# loop over 2+ sequences with zip()
+questions = ['name', 'quest', 'favorite color']
+answers = ['lancelot', 'the holy grail', 'blue', 'super secret answer']
+for q, a in zip(questions, answers):
+    print('What is your {0}? It is {1}.'.format(q, a))  # insert/reference variables within string
+# What is your name? It is lancelot.
+# What is your quest? It is the holy grail.
+# What is your favorite color? It is blue.
+
+# loop over sequence in reverse
+for i in reversed(answers):
+    print(i)
+
+# loop over sequence in sorted order
+basket = ['apple', 'orange', 'apple', 'pear', 'orange', 'banana']
+sorted(basket)
+# Out[44]: ['apple', 'apple', 'banana', 'orange', 'orange', 'pear']
+set(basket)
+# Out[48]: {'apple', 'banana', 'orange', 'pear'}  # dict. seems to sort it
+sorted(set(basket))
+# Out[49]: ['apple', 'banana', 'orange', 'pear']  # list. also sorted
+
+# this...
+for f in set(basket):
+    print(f)
+# apple
+# banana
+# pear
+# orange
+
+# ..same as
+for f in sorted(set(basket)):
+    print(f)
+# apple
+# banana
+# orange
+# pear
+
+# iterate with new list...
+import math
+raw_data = [56.2, float('NaN'), 51.7, 55.3, 52.5, float('NaN'), 47.8]
+filtered_data = []
+for value in raw_data:
+    if not math.isnan(value):
+        filtered_data.append(value)
+filtered_data
+# Out[59]: [56.2, 51.7, 55.3, 52.5, 47.8]
+
+
+
+### 5.7 More on Conditions
+
+# comparison precedence: not, and, or.
+# A and not B or C == (A and (not B)) or C
+
+# and & or short circuit: evaluated left->right and stops when outcome determined.
+# A and B and C  # does not evaluate C if B is False
+
+# general value of short-circuit is last evaluated argument
+string1, string2, string3 = '', 'Trondheim', 'Hammer Dance'
+non_null = string1 or string2 or string3
+# Out[65]: 'Trondheim'  # 'Trondheim' was first non-null (non-empty) argument
+
+
+
+### 5.8 Comparing Sequences and Other Types
+
+# sequences (of same type) compared using lexicographical ordering (item pairs in sequence order)
+
+# all true:
+(1,2,3) < (1,2,4)
+[1,2,3] < [1,2,4]
+'abc' < 'c' < 'pascal' < 'python'  # lowercase < uppercase
+(1,2,3,4) < (1,2,44)
+(1,2) < (1,2, -1)
+(1,2,3) == (1.0, 2.0, 3.0)
+(1,2,('aa','ab')) < (1,2,('abc','aa'), 4)  # not sure why nested tuple is < other
+
+
+
+### 6. Modules ###
+
+# put definitions in file (module).
+# import them into other modules or the main module
+# modules contain definitions & statements.
+# file name = module with suffix '.py'
+
