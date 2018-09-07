@@ -19,9 +19,23 @@ def fib2(n):
 
 
 # in any file you can import the module, and access the functions that way
-import fibo
+# import fibo
+#
+# fibo.fib(5)
+# fibo.fib2(8)
+# fibo.__name__
 
-fibo.fib(5)
-fibo.fib2(8)
-fibo.__name__
 
+def hidden_function(x):
+    for i in range(x**2):
+        print(i, end=' ')
+    print()
+
+
+# this makes file usable as script in addition to import module.
+# called from OS command line.
+if __name__ == "__main__":
+    import sys
+    fib(int(sys.argv[1]))
+
+print('super secret message at end')
