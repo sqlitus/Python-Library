@@ -1259,3 +1259,117 @@ non_null = string1 or string2 or string3
 # modules contain definitions & statements.
 # file name = module with suffix '.py'
 
+
+import fibo  # import module
+fibo.fib2(80)
+
+
+
+### 6.1 More on Modules ###
+
+# executable statements run when module imported (or run as script)
+# symbol table - names are placed in
+
+
+from fibo import fib  # import names from module directly
+fib(5)
+
+from fibo import *  # import all names (except '_names'
+fib2(5)
+
+from fibo import hidden_function
+hidden_function(5)
+
+
+# each module only imported once per interpreter session. restart to get changes or...
+import importlib
+importlib.reload(fibo)
+
+
+
+### 6.1 Executing modules as scripts ###
+
+# must be done in OS command line:
+# python fibo.py 5
+
+
+
+### 6.1.2 The Module Search Path ###
+
+sys.path
+
+### 6.1.3 "Compiled" Python files ###
+
+### 6.2 Standard Module ###
+
+# standard modules (in Library Reference)
+import sys
+# sys.path.append('/ufs/guideo/lib/python')
+
+
+### 6.3 The dir() function ###
+
+# which names a module defines
+dir(fibo)
+# Out[31]:
+# ['__builtins__',
+#  '__cached__',
+#  '__doc__',
+#  '__file__',
+#  '__loader__',
+#  '__name__',
+#  '__package__',
+#  '__spec__',
+#  'fib',
+#  'fib2',
+#  'hidden_function']
+
+dir(sys)
+# ...
+
+dir()
+# Out[33]:
+# ['In',
+#  'Out',
+#  '_',
+#  '_10',
+# ...
+
+# import built-in functions and variables
+import builtins
+dir(builtins)
+
+
+
+### 6.4 Packages ###
+
+# importing individual module from package
+# import sound.effects.echo
+# sound.effects.echo.echofilter(x,y,z)
+
+# from sound.effects import echo
+# (imports submodule or name defined in package (e.g. function, class, variable)
+# echo.echofilter(x,y,z)
+
+
+
+### 6.4.1 Importing * from a package
+
+# (don't use it. only works with updated '__all__' list,
+# otherwise only insures that package has been imported.
+
+
+
+### 6.4.2 Intra-package References
+
+# absolute imports
+# from sound.effects import echo
+
+# relative imports
+# from . import echo
+# from .. import formats
+
+
+### 6.4.3 Packages in Multiple Directories
+
+__path__  # directory holding __init__.py
