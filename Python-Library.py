@@ -1373,3 +1373,72 @@ dir(builtins)
 ### 6.4.3 Packages in Multiple Directories
 
 __path__  # directory holding __init__.py
+
+
+
+### 7. Input and Output ###
+
+### 7.1 Fancier Output Formatting
+
+sys.stdout  # standard output file
+
+### formatted string literals
+year = 2016; event = 'Referendum'
+f'Results of the {year} {event}'
+# Out[7]: 'Results of the 2016 Referendum'
+
+table = {'Sjoerd': 4127, 'Jack': 4098, 'Dcab': 7678}
+for name, phone in table.items():
+    print(f'{name:10} ==> {phone:10d}')
+# Sjoerd     ==>       4127
+# Jack       ==>       4098
+# Dcab       ==>       7678
+
+
+### str.format()
+yes_votes = 42_572_654 ; no_votes = 42_132_495  # int
+percentage = yes_votes / (yes_votes + no_votes)
+
+'{:-9} YES votes  {:2.2%}'.format(yes_votes, percentage)  # {:-9} pads space
+# Out[29]: ' 42572654 YES votes  50.26%'
+
+
+# strings str() and printable representations repr()
+s = 'Hello, world'
+str(s)
+s
+repr(s)
+# "'Hello, world.'"
+
+s = 'the value of x is ' + repr(5/20) + ' and y = ' + str(4/20)
+s
+# Out[73]: 'the value of x is 0.25 and y = 0.2'
+
+
+
+### 7.1.1. Formatting String Literals ###
+
+import math
+print(f'the value of pi is {math.pi:.3f}')  # after ':' min characters wide
+# the value of pi is 3.142
+
+animals = 'eels'
+print(f'my hovercraft is full of {animals}.')
+# my hovercraft is full of eels.
+print(f'my hovercraft is full of {animals !r}.')
+# my hovercraft is full of 'eels'.
+
+
+
+### 7.1.2. String format() method
+print('we are the {} who say {}'.format('knights', 'Ni'))  # using format fields
+# we are the knights who say Ni
+
+print('{0} and {1}'.format('eggs', 'ham'))
+# eggs and ham
+
+# keyword arguments
+print('this {food} is {adjective}.'.format(food='SPAM', adjective='HORRIBLE'))
+# this SPAM is HORRIBLE.
+
+# positional & keyword arguments
