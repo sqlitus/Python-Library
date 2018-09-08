@@ -313,7 +313,7 @@ top_10_teams_by_appearance.plot(kind='bar')  # not working on home k pc
 ### Chapter 3: Selecting more data ###
 
 
-# 3.1 Filtering (Subsetting)
+### 3.1 Filtering (Subsetting)
 subset_bears = football[football['team'] == "Bears"]
 
 football['team'] == 'Bears'  # returns boolean series
@@ -329,7 +329,9 @@ football[(football['team'] == 'Bears') & (football['wins'] >= 10)]  # REQUIRES P
 football[football['team'].isin(['Bears', 'Lions'])][['team', 'wins', 'losses']]  # double brackets for df slice w/ column filters
 football[football['team'].isin(['Bears', 'Lions'])]['team']                      # single brackets to grab 1 series
 
-# 3.2 Filtering Series (internally numpy arrays)
+
+
+### 3.2 Filtering Series (internally numpy arrays)
 pd.Series([1, 2, 3])         # pandas.core.series.Series
 np.array([1, 2, 3])          # numpy.ndarray
 pd.Series([1, 2, 3]).values  # numpy.ndarray
@@ -338,10 +340,46 @@ np.array([1, 2, 3])[np.array([1, 2, 3]) != 2]  # subset arrays like series
 football['team'].value_counts()
 
 
-complaints = pd.read_csv("C:\\Users\\Kelley\\PycharmProjects\\Python-Library\\Data\\311_Service_Requests_from_2010_to_Present.csv")
+
+
+
+
+### 3.3 count categorical values (series)
+complaints = pd.read_csv("Data\\311_Service_Requests_from_2010_to_Present.csv")
 complaints
 
-# count categorical values (series)
-complaints['Complaint Type'].value_counts()[:10]  # top 10 complaint types
-complaints[complaints['Complaint Type'] == 'Noise - Residential']['Borough'].value_counts()  # count of filter: noise complaints by: borough
+is_noise = complaints['Complaint Type'] == 'Noise - Street/Sidewalk'  # boolean series
+# Out[12]:
+# 0       False
+# 1       False
+# 2       False
+# ...
+
+noise_complaints = complaints[is_noise]  # dataframe subset: noise complaints
+noise_complaints['Borough'].value_counts()
+# Out[17]:
+# BROOKLYN         108
+# BRONX             74
+# MANHATTAN         68
+# QUEENS            27
+# STATEN ISLAND      1
+# Unspecified        1
+
+
+noise_complaint_counts = noise_complaints['Borough'].value_counts()
+# same as...
+complaints[complaints['Complaint Type'] == 'Noise - Street/Sidewalk']['Borough'].value_counts()
+
+complaint_counts = complaints['Borough'].value_counts()
+
+noise_complaint_counts / complaint_counts
+noise_complaint_counts / complaint_counts.astype(float)
+noise_complaint_counts / complaint_counts.astype(float).plot(kind='bar')
+
+
+
+### 4.1 adding series to dataframe ###
+
+import pandas as pd
+import matplotlib.pyplot as plt
 
