@@ -18,3 +18,25 @@ tt_spread['approvers'].value_counts()
 out = pd.merge(tt, tt_spread, how='inner', on='IR')
 out
 out['approvers_y'].value_counts()
+
+
+
+##### tickets #####
+
+
+cr = pd.read_excel("C:\\Work\\Requests\\Don Richards\\2018-08-15 change log text mining\\tickets_type.xlsx")
+df = cr
+list(df)
+
+df['approvers'] = df['approvers'].str.replace(' ','')
+df['approvers']
+
+df_split = df.set_index('Req ID').approvers.str.split(',', expand=True).stack().reset_index(1, drop=True).reset_index(name='approver')
+
+list(df_split)
+
+out = pd.merge(df, df_split, how='inner', on='Req ID')
+
+out.to_excel("C:\\Work\\Requests\\Don Richards\\2018-08-15 change log text mining\\approver_dataset.xlsx",
+             index=False)
+
