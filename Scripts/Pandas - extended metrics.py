@@ -1,9 +1,12 @@
+### Extended Metrics: adding additional fields to Incident List ###
+
 import pandas as pd
 import numpy as np
 
 
 inc_list = pd.read_excel(r"\\cewp1650\Chris Jabr Reports\ONOW Exports\incident.xlsx")  # read raw string file location
-df = inc_list.copy()
+df = inc_list.copy()  # create copy to not alter original
+
 
 # regex calculated attributes
 df['title_extracted_BU'] = df['Short description'].str.extract("(\\b\d{5}\\b)")  # double escape \b
@@ -23,11 +26,22 @@ df['derived_BU_fieldUsed'] = np.select(
     choicelist=['short desc BU#', 'short desc device name'],
     default='BU field')
 
+# more regex - concat multiple capture groups into a single string
+df['derived_Lane'] = (df['Short description'].str.extract("(?i)(lane|reg|tab|pck|svr|aha)(\W{0,2}\d{2,3})")[0] + \
+                      df['Short description'].str.extract("(?i)(lane|reg|tab|pck|svr|aha)(\W{0,2}\d{2,3})")[1]) \
+    .str.upper() \
+    .str.replace('\W', '') \
+    .str.replace('(?i)(lane)', 'REG')
 
-df['']
+df['phase_num'] = (df['Short description'].str.extract("(\d{1,2}?|\d[ ]?\d/\d)([ ]?[.]\d[.]\d)")[0] + \
+                   df['Short description'].str.extract("(\d{1,2}?|\d[ ]?\d/\d)([ ]?[.]\d[.]\d)")[1])
 
 
-df.drop(columns='high_vol', inplace=True)
+# drop 'extracted' columns (keep derived ones)
+df.drop(columns=list(df.filter(regex="extracted")), inplace=True)
+df.drop(columns='derived_lane_2', inplace=True)
+
+
 # out
 df.to_excel(r"C:\Users\chris.jabr\Documents\pandas_test.xlsx", index=False)
 
