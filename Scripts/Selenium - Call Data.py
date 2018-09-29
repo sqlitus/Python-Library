@@ -15,12 +15,12 @@ driver = webdriver.Firefox(firefox_profile=fp)
 driver.get('https://10.2.89.122:8444/cuic/Main.htmx')   # .get() will automatically wait for page to load
 
 login = driver.find_element_by_id('rawUserName')
-login.send_keys('chris.jabr')  # f.l
+login.send_keys('')  # f.l
 login.send_keys(Keys.RETURN)
 
 # wait for password field, then enter it
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'j_password')))
-driver.find_element_by_id('j_password').send_keys('135790' + Keys.RETURN)  #tmlkps
+driver.find_element_by_id('j_password').send_keys('' + Keys.RETURN)  #tmlkps
 
 # wait for navbar, then click reports
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Reports')))
