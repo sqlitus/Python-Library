@@ -6,10 +6,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# !!!!!!!!!!!!!!!! set profile for automatically opening excel file
+# TODO: correctly set profile for automatically opening excel file
 fp = webdriver.FirefoxProfile()
+fp.set_preference("browser.preferences.instantApply", True)
 fp.set_preference("browser.download.manager.showWhenStarting", False)
-fp.set_preference("browser.helperApps.neverAsk.openFile", True)
+fp.set_preference("browser.helperApps.neverAsk.openFile", "text/plain, text/csv, application/csv, application/excel")
 
 driver = webdriver.Firefox(firefox_profile=fp)
 driver.get('https://10.2.89.122:8444/cuic/Main.htmx')   # .get() will automatically wait for page to load
@@ -20,7 +21,8 @@ login.send_keys(Keys.RETURN)
 
 # wait for password field, then enter it
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'j_password')))
-driver.find_element_by_id('j_password').send_keys('' + Keys.RETURN)  #tmlkps
+driver.find_element_by_id('j_password').send_keys('')  #tmlkps
+driver.find_element_by_id('j_password').send_keys(Keys.RETURN)  #tmlkps
 
 # wait for navbar, then click reports
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Reports')))
@@ -28,44 +30,21 @@ reports_link = driver.find_elements_by_link_text('Reports')
 reports_link[0].click()
 
 ### Switch to iframe to get reports (switch back out when done) ###
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'remote_iframe_4')))
 driver.switch_to.frame(driver.find_element_by_id("remote_iframe_4"))
 
 # Navigate to report: Stock > Unified CCX Historical > Inbound > Contact Service Queue Activity Report
-driver.find_element_by_xpath("//div[@class='ngCellText name_cell_container colt0']").click()
+WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, "//span[@class='ellipsis ng-binding'][@title='Stock']"))).click()
 driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Unified CCX Historical']").click()
 driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Inbound']").click()
 driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Contact Service Queue Activity Report']").click()
 
-
-
-# !!!!!!!!!!!!!!!!! Choose date: Click 'Date Range' dropdown. Click 'Yesterday'
-'''
-# only working after already clicked...
-driver.find_element_by_xpath("//div[@class='csSelect-container ng-isolate-scope ng-valid ng-dirty ng-valid-parse']").click()
+# Find date dropdown. Click. Select Yesterday.
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@class='select-toggle form-control ng-binding ng-scope'][@title='Today']")))
+dropdown_date = driver.find_element_by_xpath("//a[@class='select-toggle form-control ng-binding ng-scope'][@title='Today']")
+driver.execute_script("arguments[0].click();", dropdown_date)
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@class='ng-binding'][@title='Yesterday']")))
 driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Yesterday']").click()
-
-### !!!!! above not working without first clicking... redo above...
-driver.find_element_by_xpath("//a[@class='select-toggle form-control ng-binding ng-scope']").click()
-driver.find_element_by_xpath("//i[@class='icon icon-chevron-down']").click()
-driver.find_element_by_xpath("//div[@class='ng-scope dropdown']").click()
-driver.find_element_by_xpath("//div[@class='select-list']").click()
-driver.find_element_by_xpath("//div[@class='csSelect-container ng-isolate-scope ng-valid']").click()  # hmm..
-driver.find_element_by_xpath("//select[@class='csSelect-container ng-isolate-scope ng-valid']").click()
-
-driver.find_element_by_xpath("//div[@class='ng-scope dropdown']").click()
-driver.find_element_by_xpath("//div[contains(text(), 'Today')]").click()
-driver.find_element_by_xpath("//div[@class='csSelect-container ng-isolate-scope ng-valid ng-dirty ng-valid-parse']").click()
-driver.find_element_by_xpath("//div[@class='editFilterPopup overflow_auto padding_20px display_flex bc_FFFFFF flex_column flex_1 overflow_hidden ng-scope']").click()
-driver.execute_script("$(arguments[0]).click();", driver.find_element_by_xpath("//div[@class='ng-scope dropdown']"))
-driver.execute_script("$(arguments[0]).click();", driver.find_element_by_xpath("//div[@class='ng-scope dropdown']"))
-
-driver.find_element_by_xpath("//div[@class='csSelect-container ng-isolate-scope ng-valid']").send_keys(Keys.RETURN)
-driver.find_element_by_xpath("//div[@class='csSelect-container ng-isolate-scope ng-valid']")
-driver.find_element_by_xpath("//a[@class='select-toggle form-control ng-binding ng-scope']")
-'''
-
-
-
 
 # Choose parameters: Click CSQ Names (@param4) & add to filters
 driver.find_element_by_xpath("//span[@class='cuic-switcher-name ellipses ng-binding'][@title='OPOS_Aloha']").click()
@@ -81,10 +60,12 @@ driver.find_element_by_xpath("//div[@class='icon cuicfont right']").click()
 driver.find_element_by_xpath("//button[@class='bc_lightgreen finishButton ng-binding']").click()
 
 # Export to excel: Click dropdown, click excel
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='btn-group cuic-option-dropdown dropdown']")))
 driver.find_element_by_xpath("//div[@class='btn-group cuic-option-dropdown dropdown']").click()
 driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Export']").click()
 
-# open the excel file dialog
+# todo: auto open excel file
+# click ok..? auto ok...?
 
 ### End
 driver.close()
@@ -107,4 +88,12 @@ ActionChains(driver).key_down(Keys.CONTROL) \
     .click(driver.find_element_by_xpath("//span[@class='cuic-switcher-name ellipses ng-binding'][@title='OPOS_R10']"))
     .key_up(Keys.CONTROL)
     .perform()
+'''
+
+## custom wait & method function
+'''
+def wait_and_click(driver, xpath):
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
+    ele = driver.find_element_by_xpath(xpath)
+    driver.execute_script("arguments[0].click();", ele)
 '''
