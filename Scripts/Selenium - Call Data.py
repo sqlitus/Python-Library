@@ -22,7 +22,7 @@ login.send_keys(Keys.RETURN)
 # wait for password field, then enter it
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'j_password')))
 driver.find_element_by_id('j_password').send_keys('')  #tmlkps
-driver.find_element_by_id('j_password').send_keys(Keys.RETURN)  #tmlkps
+driver.find_element_by_id('j_password').send_keys(Keys.RETURN)
 
 # wait for navbar, then click reports
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Reports')))
@@ -34,17 +34,18 @@ WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'remote_i
 driver.switch_to.frame(driver.find_element_by_id("remote_iframe_4"))
 
 # Navigate to report: Stock > Unified CCX Historical > Inbound > Contact Service Queue Activity Report
-WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, "//span[@class='ellipsis ng-binding'][@title='Stock']"))).click()
+WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, "//span[@class='ellipsis ng-binding'][@title='Stock']"))) #.click()
+driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Stock']"))
 driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Unified CCX Historical']").click()
 driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Inbound']").click()
 driver.find_element_by_xpath("//span[@class='ellipsis ng-binding'][@title='Contact Service Queue Activity Report']").click()
 
-# Find date dropdown. Click. Select Yesterday.
+# Wait, Find date dropdown. Click. Wait & Select Yesterday.
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@class='select-toggle form-control ng-binding ng-scope'][@title='Today']")))
 dropdown_date = driver.find_element_by_xpath("//a[@class='select-toggle form-control ng-binding ng-scope'][@title='Today']")
 driver.execute_script("arguments[0].click();", dropdown_date)
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@class='ng-binding'][@title='Yesterday']")))
-driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Yesterday']").click()
+driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Yesterday']"))
 
 # Choose parameters: Click CSQ Names (@param4) & add to filters
 driver.find_element_by_xpath("//span[@class='cuic-switcher-name ellipses ng-binding'][@title='OPOS_Aloha']").click()
@@ -59,16 +60,19 @@ driver.find_element_by_xpath("//div[@class='icon cuicfont right']").click()
 # Click 'Run' button
 driver.find_element_by_xpath("//button[@class='bc_lightgreen finishButton ng-binding']").click()
 
-# Export to excel: Click dropdown, click excel
+# Export to excel: Wait & Click dropdown, Wait & click excel
+# TODO: click even when minimized. regular .click() not working on minimzed window. execute_script not working either.
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='btn-group cuic-option-dropdown dropdown']")))
 driver.find_element_by_xpath("//div[@class='btn-group cuic-option-dropdown dropdown']").click()
-driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Export']").click()
+# driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//div[@class='btn-group cuic-option-dropdown dropdown']"))
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@class='ng-binding'][@title='Export']"))).click()
+# driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Export']"))
 
 # todo: auto open excel file
 # click ok..? auto ok...?
 
 ### End
-driver.close()
+# driver.quit()
 
 
 
