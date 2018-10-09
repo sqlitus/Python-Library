@@ -5,14 +5,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.options import Options
+
 
 # TODO: correctly set profile for automatically opening excel file
 fp = webdriver.FirefoxProfile()
 fp.set_preference("browser.preferences.instantApply", True)
 fp.set_preference("browser.download.manager.showWhenStarting", False)
-fp.set_preference("browser.helperApps.neverAsk.openFile", "text/plain, text/csv, application/csv, application/excel")
+fp.set_preference("browser.helperApps.neverAsk.openFile", "text/plain, text/csv, application/csv, application/excel, application/vnd.ms-excel")
 
-driver = webdriver.Firefox(firefox_profile=fp)
+# set headless
+opts = Options()
+# opts.headless = True
+
+driver = webdriver.Firefox(firefox_profile=fp, options=opts)
+print("Firefox Headless Browser Invoked")
 driver.get('https://10.2.89.122:8444/cuic/Main.htmx')   # .get() will automatically wait for page to load
 
 login = driver.find_element_by_id('rawUserName')
@@ -60,13 +67,12 @@ driver.find_element_by_xpath("//div[@class='icon cuicfont right']").click()
 # Click 'Run' button
 driver.find_element_by_xpath("//button[@class='bc_lightgreen finishButton ng-binding']").click()
 
-# Export to excel: Wait & Click dropdown, Wait & click excel
-# TODO: click even when minimized. regular .click() not working on minimzed window. execute_script not working either.
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='btn-group cuic-option-dropdown dropdown']")))
-driver.find_element_by_xpath("//div[@class='btn-group cuic-option-dropdown dropdown']").click()
-# driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//div[@class='btn-group cuic-option-dropdown dropdown']"))
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@class='ng-binding'][@title='Export']"))).click()
-# driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Export']"))
+# Export to excel: Wait for page & visibility
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//button[@class='btn dropdown-toggle']")))
+dropdown_export = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//button[@class='btn dropdown-toggle']")))
+driver.execute_script("arguments[0].click();", dropdown_export)
+WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//a[@class='ng-binding'][@title='Export']")))
+driver.execute_script("arguments[0].click();", driver.find_element_by_xpath("//a[@class='ng-binding'][@title='Export']"))
 
 # todo: auto open excel file
 # click ok..? auto ok...?
@@ -94,7 +100,7 @@ ActionChains(driver).key_down(Keys.CONTROL) \
     .perform()
 '''
 
-## custom wait & method function
+## custom wait & method function (unfinished)
 '''
 def wait_and_click(driver, xpath):
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
