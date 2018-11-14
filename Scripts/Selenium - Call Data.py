@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
+import time
 
 
 # TODO: correctly set profile for automatically opening excel file
@@ -66,6 +67,9 @@ driver.find_element_by_xpath("//div[@class='icon cuicfont right']").click()
 
 # Click 'Run' button
 driver.find_element_by_xpath("//button[@class='bc_lightgreen finishButton ng-binding']").click()
+
+# wait for table to load before exporting (helps for future navigation)
+WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, "//td[@class='progressTD'][contains(text(), 'Success')]")))
 
 # Export to excel: Wait for page & visibility
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//button[@class='btn dropdown-toggle']")))
