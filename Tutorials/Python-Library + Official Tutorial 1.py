@@ -99,6 +99,15 @@ os.listdir('.')
 os.chdir("\\\\cewp1650\\Chris Jabr Reports\\ONOW Exports\\")
 os.getcwd()
 
+#### relative file pathing
+import os
+os.getcwd()  # gets working directory
+os.path.join(os.getcwd(), r'my\directory\file.txt')  # raw string appends to working directory
+os.path.dirname(os.getcwd())  # gets parent directory
+os.path.join(os.path.dirname(os.getcwd()), r'lateral\directory\file.txt') # goes up 1 directory, then down
+
+
+
 
 #### import files & create dataframe
 # https://www.datacamp.com/community/tutorials/python-excel-tutorial
