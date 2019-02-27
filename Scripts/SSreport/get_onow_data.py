@@ -9,53 +9,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver import ActionChains
 import time
 print('cwd:', os.getcwd())
 
-### Wait & Click behavior Xpath function
-def waitAndAct(xpath_string, webdriver_object, action, wait=20):
 
-    WebDriverWait(webdriver_object, wait).until(EC.visibility_of_element_located((By.XPATH, xpath_string)))
-    xpath_element = webdriver_object.find_element_by_xpath(xpath_string)
-
-    if action == 'click':
-        webdriver_object.execute_script("arguments[0].click();", xpath_element)
-    elif action == 'hover':
-        ActionChains(browser).move_to_element(xpath_element).perform()
-    elif action == 'right click':
-        ActionChains(browser).context_click(xpath_element).perform()
-
-
-### Export report function
-def export_report():
-
-    # right click menu -> download excel
-    waitAndAct("//th[@name='number']", browser, 'right click')  # opens menu
-    waitAndAct("//div[@item_id='d1ad2f010a0a0b3e005c8b7fbd7c4e28']", browser, 'hover')  # hover over export
-    waitAndAct("//div[@item_id='f13f0041473012003db6d7527c9a71f0']", browser, 'hover')  # in '>' menu, hover over Excel
-    waitAndAct("//div[@item_id='f13f0041473012003db6d7527c9a71f0']", browser, 'click')  # click Excel
-
-
-### Download report function
-def download_report(wait=20):
-    # wait for 'export_complete' sign, and download
-    WebDriverWait(browser, wait).until(EC.visibility_of_element_located((By.XPATH, "//tr[@id='export_complete']")))
-    waitAndAct("//button[@id='download_button']", browser, 'click')  # click in-browser download
-
-
-### List full file paths for all files in directory function
-def listdir_full_path(path):
-    return [os.path.join(path, f) for f in os.listdir(path)]
-
+# custom modules
+from Scripts.SSreport.helper_functions import *  # navigation functions
+from Scripts.SSreport import creds  # get creds
 
 
 
 #### Selenium Navigation ####
-
-
-### get creds
-from Scripts.SSreport import creds
 
 
 ### Instantiate driver w/ download options
@@ -92,7 +56,7 @@ browser.execute_script("window.open('" + creds.creds['ss_ghd_sc_t'] + "')")
 for i, tab in enumerate(browser.window_handles):
     print('tab index', i, '.', tab)
     browser.switch_to.window(tab)
-    export_report()
+    export_report(browser)
     print(f'exporting report tab {i}: {browser.title}')
     time.sleep(1)
 
@@ -110,7 +74,7 @@ except OSError:
 ### Download each report
 for i, tab in enumerate(browser.window_handles):
     browser.switch_to.window(tab)
-    download_report()
+    download_report(browser)
     print(f'downloading report tab {i}: {browser.title}')
     time.sleep(1)
 
