@@ -60,6 +60,9 @@ def main():
 
     # CALC: first 4 chars of another columns
     my_df['first year'] = my_df['Years'].str[:4]  # first 4 chars
+    my_df['extract_year9'] = my_df['Years'].str.extract("(\d{3}9$)", expand=False)  # capture groups required. just series.
+    my_df['detect_year9'] = my_df['Years'].str.contains("\d{3}9$")  # contains doesn't require capture groups
+    my_df['replace_dash'] = my_df['Years'].str.replace("1", "***")  # first arg is regex
 
     # OUTPUT: df w/ new columns
     my_df.to_excel(output_file, index=False)
